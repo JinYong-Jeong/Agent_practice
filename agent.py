@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field, ValidationError
 
 
 # ========== 설정 ==========
-llm = ChatOllama(model="gpt-oss:20b", base_url="http://61.109.238.90:11434")
+llm = ChatOllama(model="gpt-oss:20b", base_url="")
 
 # ========== 용어 사전 ========== 
 ModelType = Literal["dl", "ml"]
