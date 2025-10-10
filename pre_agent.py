@@ -20,7 +20,7 @@ ModelType = Literal["dl", "ml"]
 FEATURE_FIELDS = ("pclass", "sex", "fare", "embarked")
 EMBARKED_GLOSSARY = "(C=Cherbourg, Q=Queenstown, S=Southampton)"
 
-llm = ChatOllama(model="gpt-oss:20b", base_url="http://61.109.238.90:11434")
+llm = ChatOllama(model="gpt-oss:20b", base_url="")
 
 
 class ParsedInputs(BaseModel):
