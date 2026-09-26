@@ -1,33 +1,19 @@
+"""API 요청과 응답의 데이터 형식."""
+
 from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
 class PredictionRequest(BaseModel):
-    pclass: int = Field(..., ge=1, le=3, description="Ticket class (1, 2, or 3)")
+    pclass: int = Field(..., ge=1, le=3, description="객실 등급: 1, 2, 3")
     sex: Literal["male", "female"]
-    fare: float = Field(..., ge=0, description="Ticket fare")
+    fare: float = Field(..., ge=0, description="티켓 요금")
     embarked: Literal["C", "Q", "S"]
 
 
-class DLPredictionResponse(BaseModel):
-    class_id: int
-    class_label: str
-    # one_hot: list[int]
-    probabilities: list[float]
-
-
-class MLPredictionResponse(BaseModel):
-    prediction: int
-    probabilities: list[float] = Field(default_factory=list)
-
-
-class AgentPredictionRequest(PredictionRequest):
-    model_type: Literal["dl", "ml"] = Field(
-        ..., description="Select which model to run (dl or ml)"
-    )
-
-
-class AgentPredictionResponse(BaseModel):
-    model_type: Literal["dl", "ml"]
-    features: dict[str, float]
-    result: DLPredictionResponse | MLPredictionResponse
+class PredictionResponse(BaseModel):
+    model: Literal["ml", "dl"]
+    prediction: Literal[0, 1]
+    label: Literal["사망", "생존"]
+    probabilities: list[float] = Field(..., min_length=2, max_length=2)

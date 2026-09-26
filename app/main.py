@@ -1,62 +1,34 @@
-from fastapi import FastAPI, HTTPException
-import uvicorn
-from app.schemas import (
-    AgentPredictionRequest,
-    AgentPredictionResponse,
-    PredictionRequest,
-    DLPredictionResponse,
-    MLPredictionResponse,
-)
-# from app.services.agent_service import predict_by_model
-from app.services.dl_service import encode_features, predict_from_dict
-from app.services.ml_service import predict_from_features
+"""Titanic 예측 FastAPI 서버."""
 
-app = FastAPI(title="Titanic Prediction API", version="1.0.0")
+from fastapi import FastAPI
+
+from app.predictor import predict_dl, predict_ml
+from app.schemas import PredictionRequest, PredictionResponse
+
+
+app = FastAPI(
+    title="Titanic ML/DL Prediction API",
+    description="FastAPI, Postman, LangGraph 분기를 배우기 위한 최소 예제",
+    version="1.0.0",
+)
 
 
 @app.get("/health")
-def health_check():
+def health_check() -> dict[str, str]:
+    """서버가 실행 중인지 확인한다."""
+
     return {"status": "ok"}
 
 
-@app.post("/predict/dl", response_model=DLPredictionResponse)
-def predict_dl(payload: PredictionRequest):
-    feature_dict = encode_features(payload.pclass, payload.sex, payload.fare, payload.embarked)
+@app.post("/predict/ml", response_model=PredictionResponse)
+def predict_with_ml(payload: PredictionRequest) -> PredictionResponse:
+    """pickle로 저장된 XGBoost 모델로 예측한다."""
 
-    try:
-        result = predict_from_dict(feature_dict)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-    return result
+    return predict_ml(payload)
 
 
-@app.post("/predict/ml", response_model=MLPredictionResponse)
-def predict_ml(payload: PredictionRequest):
-    feature_dict = encode_features(payload.pclass, payload.sex, payload.fare, payload.embarked)
+@app.post("/predict/dl", response_model=PredictionResponse)
+def predict_with_dl(payload: PredictionRequest) -> PredictionResponse:
+    """PyTorch 딥러닝 모델로 예측한다."""
 
-    try:
-        result = predict_from_features(feature_dict)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-    return result
-
-
-# @app.post("/predict/agent", response_model=AgentPredictionResponse)
-# def predict_agent(payload: AgentPredictionRequest):
-#     try:
-#         result = predict_by_model(
-#             payload.pclass,
-#             payload.sex,
-#             payload.fare,
-#             payload.embarked,
-#             payload.model_type,
-#         )
-#     except FileNotFoundError as exc:
-#         raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-#     return result
-
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    return predict_dl(payload)
