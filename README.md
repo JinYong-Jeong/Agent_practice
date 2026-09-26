@@ -1,4 +1,4 @@
-# FastAPI + LangGraph: LLM 없이, LLM 붙여서
+# FastAPI + LangGraph
 
 Titanic 승객 정보를 ML 또는 DL 모델로 예측하는 교육용 예제입니다.
 
@@ -6,8 +6,8 @@ Titanic 승객 정보를 ML 또는 DL 모델로 예측하는 교육용 예제입
 
 | 단계 | 실행 파일 | 입력 | 배울 내용 |
 | --- | --- | --- | --- |
-| 1. LLM 없이 | `agent.py` | 직접 작성한 JSON | 상태 → 조건부 분기 → FastAPI 호출 |
-| 2. LLM 연결 | `agent_llm.py` | 같은 JSON | 같은 분기/API 호출 → 예측 응답을 LLM이 설명 |
+| 1. LLM 없이 | `agent.py` | 직접 JSON 작성 | 상태 → 조건부 분기 → FastAPI 호출 |
+| 2. LLM 연결 | `agent_llm.py` | 직접 JSON 작성 | 같은 분기/API 호출 → 예측 응답을 LLM이 설명 |
 
 ```text
 공통: JSON 입력 → 코드로 ML/DL 분기 → FastAPI → 예측 API 응답
